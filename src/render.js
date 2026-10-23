@@ -3,6 +3,7 @@ import { escapeHTML, getVisibleItems } from "./utils.js"
 const statusEl = document.querySelector("#status")
 const gridEl = document.querySelector("#grid")
 const categoryEl = document.querySelector("#category")
+const statsEl = document.querySelector("#stats")
 
 const skeletonCard = `
   <div class="animate-pulse rounded-lg bg-white p-4 shadow">
@@ -67,6 +68,23 @@ function renderCategoryOptions({ categories, items }) {
   })
 }
 
+function renderStats(items) {
+  const total = items.reduce((sum, { price }) => sum + (price ?? 0), 0)
+  const average = items.length ? total / items.length : 0
+  const highest = items.reduce((max, { price }) => Math.max(max, price ?? 0), 0)
+
+  const box = (label, value) => `
+    <div class="rounded bg-white px-4 py-2 shadow">
+      <p class="text-xs uppercase text-slate-500">${label}</p>
+      <p class="font-bold">${value}</p>
+    </div>`
+
+  statsEl.innerHTML =
+    box("Items shown", items.length) +
+    box("Average price", `$${average.toFixed(2)}`) +
+    box("Highest price", `$${highest.toFixed(2)}`)
+}
+
 export function render(state) {
   const { status, error } = state
 
@@ -83,6 +101,7 @@ export function render(state) {
   if (status === "success") {
     renderCategoryOptions(state)
     const visible = getVisibleItems(state)
+        renderStats(visible)
 
     if (visible.length === 0) {
       statusEl.textContent = "No products found."
