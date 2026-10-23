@@ -57,9 +57,13 @@ document.querySelector("#grid").addEventListener("click", (event) => {
 
 document.querySelector("#close-details").addEventListener("click", () => detailsEl.close())
 
+let timer
 document.querySelector("#search").addEventListener("input", (event) => {
-  state.query = event.target.value
-  render(state)
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    state.query = event.target.value
+    render(state)
+  }, 300)
 })
 
 document.querySelector("#category").addEventListener("change", (event) => {
