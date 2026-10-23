@@ -1,14 +1,40 @@
 import "./style.css"
-import { getProducts, getJSON } from "./api.js"
+import { getProducts, getCategories } from "./api.js"
+import { render } from "./render.js"
 
-async function test() {
-  const { products } = await getProducts()
-  console.log("Products:", products.length, products[0])
+const state = {
+  items: [],
+  categories: [],
+  status: "loading",
+  error: null,
+  query: "",
+  filter: "all",
+  sort: "default",
+}
+
+async function load() {
+  state.status = "loading"
+  state.error = null
+  render(state)
 
   try {
-    await getJSON("https://dummyjson.com/productz")
+    const [productsResult, categoriesResult] = await Promise.allSettled([
+      getProducts(),
+      getCategories(),
+    ])
+
+    if (productsResult.status === "rejected") throw productsResult.reason
+
+    state.items = productsResult.value.products
+    state.categories =
+      categoriesResult.status === "fulfilled" ? categoriesResult.value : []
+    state.status = "success"
   } catch (err) {
-    console.log("Caught:", err.message)
+    state.status = "error"
+    state.error = err.message
+  } finally {
+    render(state)
   }
 }
-test()
+
+load()
