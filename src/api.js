@@ -9,3 +9,4 @@ export async function getJSON(url) {
 export const getProducts = () => getJSON(`${BASE}/products?limit=100`)
 export const getProduct = (id) => getJSON(`${BASE}/products/${id}`)
 export const getCategories = () => getJSON(`${BASE}/products/category-list`)
+
