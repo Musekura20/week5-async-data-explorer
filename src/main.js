@@ -41,4 +41,19 @@ document.querySelector("#grid").addEventListener("click", (event) => {
   if (event.target.closest("#retry")) load()
 })
 
+document.querySelector("#search").addEventListener("input", (event) => {
+  state.query = event.target.value
+  render(state)
+})
+
+document.querySelector("#category").addEventListener("change", (event) => {
+  state.filter = event.target.value
+  render(state)
+})
+
+document.querySelector("#sort").addEventListener("change", (event) => {
+  state.sort = event.target.value
+  render(state)
+})
+
 load()

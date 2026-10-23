@@ -1,7 +1,8 @@
-import { escapeHTML } from "./utils.js"
+import { escapeHTML, getVisibleItems } from "./utils.js"
 
 const statusEl = document.querySelector("#status")
 const gridEl = document.querySelector("#grid")
+const categoryEl = document.querySelector("#category")
 
 const skeletonCard = `
   <div class="animate-pulse rounded-lg bg-white p-4 shadow">
@@ -43,17 +44,52 @@ function renderCards(items) {
     .join("")
 }
 
-export function render({ status, items, error }) {
+function renderEmpty() {
+  gridEl.innerHTML = `
+    <div class="col-span-full rounded-lg bg-white p-6 text-center shadow">
+      <p class="font-semibold">No products match your search.</p>
+      <p class="mt-1 text-sm text-slate-600">Try another word or choose "All categories".</p>
+    </div>`
+}
+
+function renderCategoryOptions({ categories, items }) {
+  if (categoryEl.options.length > 1) return // already built
+
+  const names = categories.length
+    ? categories
+    : [...new Set(items.map(({ category }) => category))]
+
+  names.forEach((name) => {
+    const option = document.createElement("option")
+    option.value = name
+    option.textContent = name
+    categoryEl.append(option)
+  })
+}
+
+export function render(state) {
+  const { status, error } = state
+
   if (status === "loading") {
     statusEl.textContent = "Loading products..."
     renderSkeleton()
   }
+
   if (status === "error") {
     statusEl.textContent = "Something went wrong."
     renderError(error)
   }
+
   if (status === "success") {
-    statusEl.textContent = `${items.length} products found`
-    renderCards(items)
+    renderCategoryOptions(state)
+    const visible = getVisibleItems(state)
+
+    if (visible.length === 0) {
+      statusEl.textContent = "No products found."
+      renderEmpty()
+    } else {
+      statusEl.textContent = `${visible.length} products found`
+      renderCards(visible)
+    }
   }
 }
