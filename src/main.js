@@ -1,6 +1,6 @@
 import "./style.css"
-import { getProducts, getCategories } from "./api.js"
-import { render } from "./render.js"
+import { getProducts, getCategories, getProduct } from "./api.js"
+import { render, renderDetails, renderDetailsMessage } from "./render.js"
 
 const state = {
   items: [],
@@ -37,9 +37,25 @@ async function load() {
   }
 }
 
+const detailsEl = document.querySelector("#details")
+
+async function openDetails(id) {
+  renderDetailsMessage("Loading details...")
+  detailsEl.showModal()
+  try {
+    renderDetails(await getProduct(id))
+  } catch (err) {
+    renderDetailsMessage(`Could not load details: ${err.message}`)
+  }
+}
+
 document.querySelector("#grid").addEventListener("click", (event) => {
-  if (event.target.closest("#retry")) load()
+  if (event.target.closest("#retry")) return load()
+  const card = event.target.closest("button[data-id]")
+  if (card) openDetails(card.dataset.id)
 })
+
+document.querySelector("#close-details").addEventListener("click", () => detailsEl.close())
 
 document.querySelector("#search").addEventListener("input", (event) => {
   state.query = event.target.value

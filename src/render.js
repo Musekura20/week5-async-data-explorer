@@ -4,6 +4,7 @@ const statusEl = document.querySelector("#status")
 const gridEl = document.querySelector("#grid")
 const categoryEl = document.querySelector("#category")
 const statsEl = document.querySelector("#stats")
+const detailsContentEl = document.querySelector("#details-content")
 
 const skeletonCard = `
   <div class="animate-pulse rounded-lg bg-white p-4 shadow">
@@ -111,4 +112,19 @@ export function render(state) {
       renderCards(visible)
     }
   }
+}
+
+export function renderDetailsMessage(text) {
+  detailsContentEl.textContent = text
+}
+
+export function renderDetails({ title, description, price, category, brand, rating, stock, thumbnail }) {
+  detailsContentEl.innerHTML = `
+    <img src="${escapeHTML(thumbnail ?? "")}" alt="${escapeHTML(title ?? "Product image")}"
+      class="mx-auto h-48 object-contain" />
+    <h2 class="mt-2 text-xl font-bold">${escapeHTML(title ?? "Untitled")}</h2>
+    <p class="text-sm text-slate-500">${escapeHTML(category ?? "Unknown")} · ${escapeHTML(brand ?? "No brand")}</p>
+    <p class="mt-2">${escapeHTML(description ?? "No description")}</p>
+    <p class="mt-2 font-bold">${price != null ? `$${price.toFixed(2)}` : "Price not available"}</p>
+    <p class="text-sm">Rating: ${escapeHTML(rating ?? "N/A")} · Stock: ${escapeHTML(stock ?? "N/A")}</p>`
 }
