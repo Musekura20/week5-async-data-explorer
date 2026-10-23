@@ -37,4 +37,8 @@ async function load() {
   }
 }
 
+document.querySelector("#grid").addEventListener("click", (event) => {
+  if (event.target.closest("#retry")) load()
+})
+
 load()
