@@ -9,7 +9,7 @@ A single-page app that loads products from a public API. The user can browse, se
 ## Links
 
 - **GitHub repository:** https://github.com/Musekura20/week5-async-data-explorer
-- **Live app:** cool-lily-2309b5.netlify.app/
+- **Live app:** [cool-lily-2309b5.netlify.app/](https://cool-lily-2309b5.netlify.app/)
 - **Video demonstration:** 
 
 ## Features
